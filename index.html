@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head> 
+<body>
+  <h3>Bar Chart</h1>
+    <p class="message"></p>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    req = new XMLHttpRequest();
+    req.open("GET",'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json',true);
+    req.send();
+    req.onload = function() {
+      json = JSON.parse(req.responseText);
+
+      const dataset = json.data;
+      const w = 100000;
+      const h = 500;
+      const padding = 5;
+
+      const xScale = d3.scaleLinear()
+        .domain([0, d3.max(dataset, (d) => d[0])])
+        .range([padding, w - padding]);
+
+      const yScale = d3.scaleLinear()
+        .domain([d3.min(dataset, d => d[1]), d3.max(dataset, d => d[1])])
+        .range([padding, h - padding]);
+      
+      var div = d3.select("body").append("div")	
+        .attr("class", "tooltip")				
+        .style("opacity", 0)
+      
+      const svg = d3.select("body")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+      
+      svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr('class', 'bar')
+        .attr("x", (d, i) => i * 5)
+        .attr("y", (d, i) => h - yScale(d[1]))
+        .attr("width", padding)
+        .attr("height", (d, i) => yScale(d[1]))
+        .attr("fill", "navy")
+        .on("mouseover", d => {		
+          div.transition()
+            .duration(200)		
+            .style("opacity", .9);		
+          div.html(d[1] + d[0])	
+            .style("left", (d3.event.pageX) + "px")		
+            .style("top", (d3.event.pageY - 28) + "px");	
+        })
+        .on("mouseout", d => {		
+          div.transition()
+            .duration(500)		
+            .style("opacity", 0);	
+          });
+        }
+  })
+</script>
+</body>
+</html>
