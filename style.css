@@ -2,6 +2,15 @@
   font-family: sans-serif;
 }
 
+.axis {
+  font-size: 20px;
+}
+
+.axis-label {
+  font-size: 22px;
+}
+
+
 .tooltip {
   position: absolute;			
     text-align: center;			

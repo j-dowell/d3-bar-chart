@@ -9,11 +9,10 @@
   <link rel="stylesheet" type="text/css" href="style.css">
 </head> 
 <body>
-  <h1 class='title'>US GDP</h1>
-    <p class="message"></p>
+  <h1 class='title'>United States GDP</h1>
     
 <script>
-  // Helper functions
+  // Helper function to return correct year and quarter, given a date
   function dateFormatter(date) {
     const year = date.substring(0, 4);
     const month = date.substring(6, 7);
@@ -30,17 +29,23 @@
 }
 
   document.addEventListener('DOMContentLoaded', () => {
+    // Retreiving data on page load
     req = new XMLHttpRequest();
-    req.open("GET",'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json',true);
+    req.open(
+      "GET",'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json',
+      true
+    );
     req.send();
     req.onload = () => {
       json = JSON.parse(req.responseText);
 
       const dataset = json.data;
-      const w = 1500;
-      const h = 750;
+      // SVG dimensions
       const padding = 50;
-
+      const w = 1500 - padding;
+      const h = 750 - padding;
+      
+      // Setting x and y scales
       const xScale = d3.scaleTime()
         .domain(d3.extent(dataset, d => new Date(d[0]) ))
         .range([0, w - padding]);
@@ -49,7 +54,9 @@
         .domain([0, d3.max(dataset, d => d[1])])
         .range([h, 0 + padding]);
       
-      const div = d3.select("body").append("div")	
+      // Tooltip
+      const div = d3.select("body")
+        .append("div")	
         .attr("class", "tooltip")				
         .style("opacity", 0)
       
@@ -69,6 +76,7 @@
         .attr("width", 5)
         .attr("height", (d, i) => h - yScale(d[1]))
         .attr("fill", "navy")
+        // Display tooltip on hover
         .on("mouseover", d => {		
           div.transition()
             .duration(200)		
@@ -77,7 +85,7 @@
             ${dateFormatter(d[0])}
             <br/>
             $${d[1].toLocaleString()} billion
-            `)	
+          `)
             .style("left", (d3.event.pageX) + "px")		
             .style("top", (d3.event.pageY - 28) + "px");	
         })
@@ -86,30 +94,42 @@
             .duration(500)		
             .style("opacity", 0);	
         });
-
+        
+        // X and Y axis setup
         const yAxis = d3.axisLeft(yScale)
         const xAxis = d3
           .axisBottom(xScale)
           .tickFormat(d3.timeFormat("%Y"))
-          // .tickValues(dataset.map(d => new Date(d[0])))
-    
+        
+        // Adding axes
         svg.append("g")
           .attr("transform", `translate(${padding}, ${-padding})`)
           .attr("class","axis")
+          .attr("id","y-axis")
           .call(yAxis)
             
-
         svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", `translate(${padding}, ${(h - padding)})`)
-        .call(xAxis)
-        .selectAll('text')
-        // .style("text-anchor", "end")
-        // .attr("dx", "-.8em")
-        // .attr("dy", "-1.5em")
-        // // .attr("transform", "rotate(-90)")
-        .text(d =>d.getTimeString());
+          .attr("class","axis")
+          .attr("id", "x-axis")
+          .attr("transform", `translate(${padding}, ${(h - padding)})`)
+          .call(xAxis)
+          .selectAll('text')
+        
+        // Axis titling
+        svg.append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", -padding)
+          .attr("x",0 - (h / 2))
+          .attr("dy", "1em")
+          .attr('class', 'axis-label')
+          .style("text-anchor", "middle")
+          .text("USD/Billions");   
 
+          svg.append("text")             
+            .attr("transform",`translate(${w/2}, ${h + 20})`)
+            .attr('class', 'axis-label')
+            .style("text-anchor", "middle")
+            .text("Year")
         }
   })
 </script>
