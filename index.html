@@ -36,13 +36,19 @@
       json = JSON.parse(req.responseText);
 
       const dataset = json.data;
-      const w = 2000;
+      const w = 1500;
       const h = 500;
       const padding = 50;
 
-      const xScale = d3.scaleLinear()
-        .domain([0, d3.max(dataset, (d) => d[0])])
-        .range([0, w]);
+      let parseDate = d3.timeFormat("%Y-%m-%d");
+
+      // const xScale = d3.scaleLinear()
+      //   .domain([d3.min(dataset, d => parseDate(d[0])), d3.max(dataset, d => parseDate(d[0]))])
+      //   .range([0, w]);
+
+        var xScale = d3.scaleTime()
+          .domain(d3.extent(dataset, d => new Date(d[0]) ))
+          .range([0, w - padding]);
 
       const yScale = d3.scaleLinear()
         .domain([0, d3.max(dataset, d => d[1])])
@@ -62,7 +68,7 @@
         .enter()
         .append("rect")
         .attr('class', 'bar')
-        .attr("x", (d, i) => i * 5 + padding)
+        .attr("x", (d, i) => padding +  xScale(new Date(d[0])))
         .attr("y", (d, i) => yScale(d[1]) - padding)
         .attr("width", 5)
         .attr("height", (d, i) => h - yScale(d[1]))
@@ -87,6 +93,9 @@
 
         var yAxis = d3.axisLeft(yScale)
         var xAxis = d3.axisBottom(xScale)
+          .tickFormat(d3.timeFormat("%Y"))
+          // .tickValues(dataset.map(d => new Date(d[0])))
+
 
 // svg.append("g")
 //     .attr("transform", "translate(" + margin + "," + (height+margin) + ")")
@@ -98,11 +107,22 @@
           .attr("transform", `translate(${padding}, ${-padding})`)
             .attr("class","axis")
             .call(yAxis)
+            
 
          svg.append("g")
           .attr("class", "axis")
           .attr("transform", `translate(${padding}, ${(h - padding)})`)
-          .call(d3.axisBottom(xScale))
+          .call(xAxis)
+          
+          
+          .selectAll('text')
+          // .style("text-anchor", "end")
+          // .attr("dx", "-.8em")
+          // .attr("dy", "-1.5em")
+          // // .attr("transform", "rotate(-90)")
+          .text((d) =>{
+            return d.getTimeString();
+          });
         
         }
   })
