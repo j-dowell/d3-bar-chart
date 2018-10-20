@@ -1,7 +1,7 @@
 // Helper function to return correct year and quarter, given a date
 const dateFormatter = (date) => {
   const year = date.substring(0, 4);
-  const month = date.substring(6, 7);
+  const month = Number(date.substring(5, 7));
   let quarter;
   if (month < 4)
     quarter = 1;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Display tooltip on hover
       .on("mouseover", d => {		
         div.transition()
-          .duration(200)		
+          .duration(100)		
           .style("opacity", .9);		
         div.html(`
           ${dateFormatter(d[0])}
@@ -74,11 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
           $${d[1].toLocaleString()} billion
         `)
           .style("left", (d3.event.pageX) + "px")		
-          .style("top", (d3.event.pageY - 28) + "px");	
+          .style("top", (d3.event.pageY) + "px");	
       })
       .on("mouseout", d => {		
         div.transition()
-          .duration(500)		
+          .duration(100)		
           .style("opacity", 0);	
       });
       

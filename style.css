@@ -27,7 +27,7 @@
 
 .bar:hover {
   fill: red;
-  transition: 0.3s
+  transition: 0.05s
 }
 
 .title {
