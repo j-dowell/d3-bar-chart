@@ -9,8 +9,9 @@
   <link rel="stylesheet" type="text/css" href="style.css">
 </head> 
 <body>
-  <h3>Bar Chart</h1>
+  <h1 class='title'>US GDP</h1>
     <p class="message"></p>
+    
 <script>
   // Helper functions
   function dateFormatter(date) {
@@ -28,11 +29,11 @@
     return `${year} Q${quarter}`;
 }
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', () => {
     req = new XMLHttpRequest();
     req.open("GET",'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json',true);
     req.send();
-    req.onload = function() {
+    req.onload = () => {
       json = JSON.parse(req.responseText);
 
       const dataset = json.data;
@@ -55,7 +56,8 @@
       const svg = d3.select("body")
         .append("svg")
         .attr("width", w )
-        .attr("height", h );
+        .attr("height", h )
+        .attr('class', 'svg-container');
       
       svg.selectAll("rect")
         .data(dataset)

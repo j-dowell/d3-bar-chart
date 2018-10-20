@@ -1,3 +1,7 @@
+* {
+  font-family: sans-serif;
+}
+
 .tooltip {
   position: absolute;			
     text-align: center;			
@@ -18,3 +22,14 @@
   transition: 0.3s
 }
 
+.title {
+  text-align: center;
+}
+
+.svg-container {
+  padding: 50px;
+  margin: 10px;
+  display: flex;
+  margin: 0 auto;
+  border: 2px solid black;
+}
